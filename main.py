@@ -1,11 +1,12 @@
 from fastapi import FastAPI
+import os
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
-    return {"Hello": "From Dev"}
+    return {"Hello": os.getenv("APP_MESSAGE", "Default Message")}
 
 
 @app.get("/items/{item_id}")
