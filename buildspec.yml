@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: eu-north-1
+    AWS_ACCOUNT_ID: "911505962978"
+    ECR_REPO_URI: 911505962978.dkr.ecr.eu-north-1.amazonaws.com/fastapi-app
+    ECS_CLUSTER: my-first-cluster
+    ECS_SERVICE: fastapi-service
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
+
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $ECR_REPO_URI:latest .
+
+  post_build:
+    commands:
+      - echo Pushing image to ECR...
+      - docker push $ECR_REPO_URI:latest
+      - echo Forcing ECS to pull new image...
+      - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
+
+artifacts:
+  files:
+    - '**/*'
