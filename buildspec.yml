@@ -4,9 +4,9 @@ env:
   variables:
     AWS_DEFAULT_REGION: eu-north-1
     AWS_ACCOUNT_ID: "911505962978"
-    ECR_REPO_URI: 911505962978.dkr.ecr.eu-north-1.amazonaws.com/fastapi-app
+    ECR_REPO_URI: 911505962978.dkr.ecr.eu-north-1.amazonaws.com/fastapi-app-dev
     ECS_CLUSTER: my-first-cluster
-    ECS_SERVICE: fastapi-service
+    ECS_SERVICE: fastapi-service-dev
 
 phases:
   pre_build:
