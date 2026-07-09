@@ -2,3 +2,8 @@ fastapi
 uvicorn
 psycopg2-binary
 python-dotenv
+cryptography
+langchain-core
+langchain-aws
+langgraph
+boto3
