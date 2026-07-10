@@ -3,17 +3,29 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 import os
+import json
 import base64
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes, serialization
 
+
+def _load_secrets():
+    load_dotenv()
+    if os.getenv("AES_KEY"):
+        return
+    import boto3
+    client = boto3.client("secretsmanager", region_name="eu-north-1")
+    secret = client.get_secret_value(SecretId="fastapi-app/env")
+    for k, v in json.loads(secret["SecretString"]).items():
+        os.environ.setdefault(k, v)
+
+
+_load_secrets()
+
 from langchain_core.messages import HumanMessage
 from chatbot import graph
-
-
-load_dotenv()
 
 app = FastAPI()
 

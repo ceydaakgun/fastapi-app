@@ -1,12 +1,9 @@
 import os
 import psycopg2
-from dotenv import load_dotenv
 from langchain_core.messages import SystemMessage
 from langchain_aws import ChatBedrockConverse
 from langgraph.graph import START, StateGraph, MessagesState
 from langgraph.prebuilt import tools_condition, ToolNode
-
-load_dotenv()
 
 DB_SCHEMA = """
   Table: superstore
