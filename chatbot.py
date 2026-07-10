@@ -70,7 +70,7 @@ sys_msg = SystemMessage(content=f"""You are a helpful data analyst assistant.
 def assistant(state: MessagesState):
       llm = ChatBedrockConverse(
           model="us.anthropic.claude-sonnet-4-6",
-          region_name=os.getenv("AWS_REGION", "us-east-1"),
+          region_name="us-east-1",
       )
       llm_with_tools = llm.bind_tools(tools)
       return {"messages": [llm_with_tools.invoke([sys_msg] +
