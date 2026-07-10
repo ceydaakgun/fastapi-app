@@ -14,12 +14,25 @@ from cryptography.hazmat.primitives import hashes, serialization
 def _load_secrets():
     load_dotenv()
     if os.getenv("AES_KEY"):
+        if not os.path.exists("private.pem"):
+            _write_private_key_from_env()
         return
     import boto3
     client = boto3.client("secretsmanager", region_name="eu-north-1")
     secret = client.get_secret_value(SecretId="fastapi-app/env")
-    for k, v in json.loads(secret["SecretString"]).items():
+    data = json.loads(secret["SecretString"])
+    for k, v in data.items():
         os.environ.setdefault(k, v)
+    if "PRIVATE_KEY" in data and not os.path.exists("private.pem"):
+        with open("private.pem", "w") as f:
+            f.write(data["PRIVATE_KEY"])
+
+
+def _write_private_key_from_env():
+    key = os.getenv("PRIVATE_KEY", "")
+    if key:
+        with open("private.pem", "w") as f:
+            f.write(key)
 
 
 _load_secrets()
