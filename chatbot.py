@@ -58,8 +58,8 @@ def db_query(query_string: str) -> list:
 tools = [db_query]
 
 llm = ChatBedrockConverse(
-      model="anthropic.claude-sonnet-4-5",
-      region_name="us-east-1",
+      model="us.anthropic.claude-sonnet-4-6",
+      region_name=os.getenv("AWS_REGION", "us-east-1"),
   )
 
 llm_with_tools = llm.bind_tools(tools)
