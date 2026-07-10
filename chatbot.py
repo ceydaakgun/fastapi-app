@@ -57,13 +57,6 @@ def db_query(query_string: str) -> list:
 
 tools = [db_query]
 
-llm = ChatBedrockConverse(
-      model="us.anthropic.claude-sonnet-4-6",
-      region_name=os.getenv("AWS_REGION", "us-east-1"),
-  )
-
-llm_with_tools = llm.bind_tools(tools)
-
 sys_msg = SystemMessage(content=f"""You are a helpful data analyst assistant.
   You have access to a PostgreSQL database with superstore sales data.
   Use the db_query tool to answer questions about the data.
@@ -75,6 +68,11 @@ sys_msg = SystemMessage(content=f"""You are a helpful data analyst assistant.
 
 
 def assistant(state: MessagesState):
+      llm = ChatBedrockConverse(
+          model="us.anthropic.claude-sonnet-4-6",
+          region_name=os.getenv("AWS_REGION", "us-east-1"),
+      )
+      llm_with_tools = llm.bind_tools(tools)
       return {"messages": [llm_with_tools.invoke([sys_msg] +
   state["messages"])]}
 
