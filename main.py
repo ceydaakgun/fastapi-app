@@ -21,8 +21,10 @@ def _load_secrets():
     client = boto3.client("secretsmanager", region_name="eu-north-1")
     secret = client.get_secret_value(SecretId="fastapi-app/env")
     data = json.loads(secret["SecretString"])
+    skip_keys = {"AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"}
     for k, v in data.items():
-        os.environ.setdefault(k, v)
+        if k not in skip_keys:
+            os.environ.setdefault(k, v)
     if "PRIVATE_KEY" in data and not os.path.exists("private.pem"):
         with open("private.pem", "w") as f:
             f.write(data["PRIVATE_KEY"])
